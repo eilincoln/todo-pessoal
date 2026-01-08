@@ -2,41 +2,15 @@
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
-    <title>Minha To-Do List</title>
+    <title>Rotina Diária</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div class="todo-container">
-      <h1>Minhas Tarefas</h1>
-      <p id="streak" style="text-align: center; font-weight: 600"></p>
+    <div class="app">
+      <h1>Minha Rotina</h1>
+      <p id="streak"></p>
 
-      <div class="todo-input">
-        <input type="text" id="taskInput" placeholder="Digite uma tarefa..." />
-        <button id="addTaskBtn">Adicionar</button>
-      </div>
-
-      <div
-        style="margin-top: 10px; display: flex; align-items: center; gap: 6px"
-      >
-        <input type="checkbox" id="dailyCheckbox" />
-        <select
-          id="areaSelect"
-          style="
-            margin-top: 10px;
-            width: 100%;
-            padding: 8px;
-            border-radius: 8px;
-          "
-        >
-          <option value="Estudo">Estudo</option>
-          <option value="Trabalho">Trabalho</option>
-          <option value="Saúde">Saúde</option>
-          <option value="Pessoal">Pessoal</option>
-        </select>
-        <label for="dailyCheckbox">Tarefa diária</label>
-      </div>
-
-      <ul id="taskList"></ul>
+      <div id="sections"></div>
     </div>
 
     <script src="script.js"></script>
