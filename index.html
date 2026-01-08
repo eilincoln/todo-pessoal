@@ -2,17 +2,28 @@
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
-    <title>Rotina Diária</title>
-    <link rel="stylesheet" href="style.css" />
+    <title>Dashboard Diário</title>
+    <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
-    <div class="app">
-      <h1>Minha Rotina</h1>
-      <p id="streak"></p>
+    <main class="container">
+      <h1>Meu Dashboard Diário</h1>
 
-      <div id="sections"></div>
-    </div>
+      <section class="todo-input">
+        <input
+          type="text"
+          id="taskInput"
+          placeholder="O que precisa ser feito hoje?"
+        />
+        <button id="addTaskBtn">Adicionar</button>
+      </section>
 
-    <script src="script.js"></script>
+      <section class="todo-list">
+        <h2>Tarefas de Hoje</h2>
+        <ul id="taskList"></ul>
+      </section>
+    </main>
+
+    <script src="js/app.js"></script>
   </body>
 </html>
