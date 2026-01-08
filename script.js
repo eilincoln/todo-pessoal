@@ -1,16 +1,26 @@
 const taskInput = document.getElementById("taskInput");
 const addTaskBtn = document.getElementById("addTaskBtn");
 const taskList = document.getElementById("taskList");
+const dailyCheckbox = document.getElementById("dailyCheckbox");
 
 // Carrega tarefas salvas
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
-const dailyTasks = [
-  "Estudar programação",
-  "Treinar / atividade física",
-  "Revisar tarefas do dia",
-  "Ler algo útil",
-];
+function resetDailyTasksIfNeeded() {
+  const today = new Date().toDateString();
+  const lastAccess = localStorage.getItem("lastAccess");
+
+  if (lastAccess !== today) {
+    tasks.forEach((task) => {
+      if (task.daily) {
+        task.done = false;
+      }
+    });
+
+    saveTasks();
+    localStorage.setItem("lastAccess", today);
+  }
+}
 
 function resetDailyTasksIfNeeded() {
   const today = new Date().toDateString();
@@ -89,11 +99,18 @@ addTaskBtn.addEventListener("click", () => {
   const taskText = taskInput.value.trim();
   if (!taskText) return;
 
-  tasks.push({ text: taskText, done: false });
+  tasks.push({
+    text: taskText,
+    done: false,
+    daily: dailyCheckbox.checked,
+  });
+
   saveTasks();
   renderTasks();
+  renderStreak();
 
   taskInput.value = "";
+  dailyCheckbox.checked = false;
 });
 
 function allDailyTasksDone() {
