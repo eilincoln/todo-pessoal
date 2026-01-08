@@ -128,3 +128,10 @@ li.done .checkbox::after {
 li.daily {
   border-left: 4px solid #667eea;
 }
+
+h3 {
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #666;
+}

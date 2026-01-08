@@ -2,6 +2,7 @@ const taskInput = document.getElementById("taskInput");
 const addTaskBtn = document.getElementById("addTaskBtn");
 const taskList = document.getElementById("taskList");
 const dailyCheckbox = document.getElementById("dailyCheckbox");
+const areaSelect = document.getElementById("areaSelect");
 
 // Carrega tarefas salvas
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
@@ -22,28 +23,6 @@ function resetDailyTasksIfNeeded() {
   }
 }
 
-function resetDailyTasksIfNeeded() {
-  const today = new Date().toDateString();
-  const lastAccess = localStorage.getItem("lastAccess");
-
-  if (lastAccess !== today) {
-    // Remove tarefas diárias antigas
-    tasks = tasks.filter((task) => !task.daily);
-
-    // Adiciona tarefas diárias novamente
-    dailyTasks.forEach((text) => {
-      tasks.push({
-        text,
-        done: false,
-        daily: true,
-      });
-    });
-
-    saveTasks();
-    localStorage.setItem("lastAccess", today);
-  }
-}
-
 // Salva no localStorage
 function saveTasks() {
   localStorage.setItem("tasks", JSON.stringify(tasks));
@@ -53,7 +32,17 @@ function saveTasks() {
 function renderTasks() {
   taskList.innerHTML = "";
 
-  tasks.forEach((task, index) => {
+  let currentArea = "";
+
+  getOrderedTasks().forEach((task, index) => {
+    if (task.area !== currentArea) {
+      currentArea = task.area;
+      const areaTitle = document.createElement("h3");
+      areaTitle.textContent = currentArea;
+      areaTitle.style.margin = "15px 0 5px";
+      taskList.appendChild(areaTitle);
+    }
+
     const li = document.createElement("li");
     if (task.done) li.classList.add("done");
     if (task.daily) li.classList.add("daily");
@@ -71,24 +60,52 @@ function renderTasks() {
     left.appendChild(span);
 
     li.addEventListener("click", () => {
-      tasks[index].done = !tasks[index].done;
+      task.done = !task.done;
       saveTasks();
       renderTasks();
       renderStreak();
     });
 
+    // ✏️ botão editar
+    const editBtn = document.createElement("button");
+    editBtn.textContent = "✏️";
+    editBtn.classList.add("delete-btn");
+
+    editBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+
+      const newText = prompt("Editar tarefa:", task.text);
+      if (newText !== null) task.text = newText;
+
+      const isDaily = confirm("Essa tarefa é diária?");
+      task.daily = isDaily;
+
+      const newArea = prompt(
+        "Área (Estudo, Trabalho, Saúde, Pessoal):",
+        task.area
+      );
+      if (newArea) task.area = newArea;
+
+      saveTasks();
+      renderTasks();
+      renderStreak();
+    });
+
+    // ❌ excluir
     const deleteBtn = document.createElement("button");
     deleteBtn.textContent = "✕";
     deleteBtn.classList.add("delete-btn");
 
     deleteBtn.addEventListener("click", (e) => {
       e.stopPropagation();
-      tasks.splice(index, 1);
+      tasks.splice(tasks.indexOf(task), 1);
       saveTasks();
       renderTasks();
+      renderStreak();
     });
 
     li.appendChild(left);
+    li.appendChild(editBtn);
     li.appendChild(deleteBtn);
     taskList.appendChild(li);
   });
@@ -103,6 +120,7 @@ addTaskBtn.addEventListener("click", () => {
     text: taskText,
     done: false,
     daily: dailyCheckbox.checked,
+    area: areaSelect.value,
   });
 
   saveTasks();
@@ -157,3 +175,17 @@ function renderStreak() {
 resetDailyTasksIfNeeded();
 renderTasks();
 renderStreak();
+
+function getOrderedTasks() {
+  return [...tasks].sort((a, b) => {
+    if (a.daily && !b.daily) return -1;
+    if (!a.daily && b.daily) return 1;
+    return a.area.localeCompare(b.area);
+  });
+}
+
+taskInput.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") {
+    addTaskBtn.click();
+  }
+});
