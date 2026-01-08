@@ -124,3 +124,7 @@ li.done .checkbox::after {
 .delete-btn:hover {
   color: #e53e3e;
 }
+
+li.daily {
+  border-left: 4px solid #667eea;
+}
